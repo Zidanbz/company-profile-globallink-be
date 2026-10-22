@@ -19,9 +19,21 @@ export const createApp = (): Express => {
   );
 
   // CORS
+  const allowedOrigins = env.CORS_ORIGIN.split(",").map((s) => s.trim()).filter(Boolean);
   app.use(
     cors({
-      origin: env.CORS_ORIGIN,
+      origin: (requestOrigin, callback) => {
+        // Allow requests with no origin (like mobile apps, curl, or same-origin)
+        if (!requestOrigin) return callback(null, true);
+        if (allowedOrigins.includes("*") || allowedOrigins.includes(requestOrigin)) {
+          return callback(null, true);
+        }
+        // Allow any subdomain of globallink.net.id
+        if (/^https?:\/\/([a-zA-Z0-9-]+\.)*globallink\.net\.id$/.test(requestOrigin)) {
+          return callback(null, true);
+        }
+        return callback(null, false);
+      },
       credentials: true,
       methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
       allowedHeaders: ["Content-Type", "Authorization"],
