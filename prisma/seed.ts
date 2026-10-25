@@ -312,7 +312,7 @@ async function main() {
   }
   console.log(`✔ Seeded ${initialStats.length} initial about statistics.`);
 
-  // 7. Seed Initial Partner & Client Logos (100% Stored in Database as HD Vectors, 0 local disk files)
+  // 7. Seed Initial Partner & Client Logos (100% Stored in Database as HD Vectors & WebP Base64, 0 local disk files)
   const { HD_PARTNERS_AND_CLIENTS } = await import("./seed_hd_partners");
   for (const p of HD_PARTNERS_AND_CLIENTS) {
     const existing = await prisma.partnerLogo.findFirst({
@@ -322,7 +322,28 @@ async function main() {
       await prisma.partnerLogo.create({ data: p });
     }
   }
-  console.log(`✔ Seeded ${HD_PARTNERS_AND_CLIENTS.length} HD partner & client logos in database.`);
+
+  // 8. Seed Custom Partner & Client Logos from "logo partner" folder
+  const { CUSTOM_PARTNERS_AND_CLIENTS } = await import("./seed_custom_partners");
+  for (const cp of CUSTOM_PARTNERS_AND_CLIENTS) {
+    const existing = await prisma.partnerLogo.findFirst({
+      where: { name: cp.name },
+    });
+    if (existing) {
+      await prisma.partnerLogo.update({
+        where: { id: existing.id },
+        data: {
+          category: cp.category,
+          logoUrl: cp.logoUrl,
+          sortOrder: cp.sortOrder,
+          isActive: cp.isActive,
+        },
+      });
+    } else {
+      await prisma.partnerLogo.create({ data: cp });
+    }
+  }
+  console.log(`✔ Seeded ${CUSTOM_PARTNERS_AND_CLIENTS.length} custom partner & client logos into database.`);
 
   console.log("🌱 Development Seed Completed successfully.");
 }
