@@ -140,6 +140,43 @@ model PartnerLogo {
   @@index([isActive])
 }
 
+enum ChatSenderType {
+  VISITOR
+  ADMIN
+}
+
+model ChatSession {
+  id            Int           @id @default(autoincrement())
+  sessionId     String        @unique
+  visitorName   String        @default("Pengunjung")
+  visitorEmail  String?
+  status        String        @default("ACTIVE") // "ACTIVE" | "CLOSED"
+  unreadAdmin   Int           @default(0)
+  unreadVisitor Int           @default(0)
+  lastMessageAt DateTime      @default(now())
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  messages      ChatMessage[]
+
+  @@index([status])
+  @@index([lastMessageAt])
+  @@index([sessionId])
+}
+
+model ChatMessage {
+  id          Int             @id @default(autoincrement())
+  sessionId   Int
+  session     ChatSession     @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  senderType  ChatSenderType
+  senderName  String?
+  message     String          @db.Text
+  isRead      Boolean         @default(false)
+  createdAt   DateTime        @default(now())
+
+  @@index([sessionId])
+  @@index([createdAt])
+}
+
 model VisitorLog {
   id         Int      @id @default(autoincrement())
   visitorId  String   @db.VarChar(64)

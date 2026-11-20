@@ -8,6 +8,7 @@ import { publicAboutStatsRouter, adminAboutStatsRouter } from "./about-stats.rou
 import { publicContactRouter, adminContactRouter } from "./contact-messages.routes";
 import { publicPartnersRouter, adminPartnersRouter } from "./partners.routes";
 import { publicAnalyticsRouter, adminAnalyticsRouter } from "./analytics.routes";
+import { publicChatRouter, adminChatRouter } from "./chat.routes";
 import uploadRoutes from "./upload.routes";
 
 const apiV1Router = Router();
@@ -22,6 +23,7 @@ apiV1Router.use("/about-stats", publicAboutStatsRouter);
 apiV1Router.use("/contact-messages", publicContactRouter);
 apiV1Router.use("/partners", publicPartnersRouter);
 apiV1Router.use("/analytics", publicAnalyticsRouter);
+apiV1Router.use("/chat", publicChatRouter);
 
 // Admin Protected Routes
 apiV1Router.use("/admin/posts", adminPostsRouter);
@@ -32,7 +34,9 @@ apiV1Router.use("/admin/about-stats", adminAboutStatsRouter);
 apiV1Router.use("/admin/contact-messages", adminContactRouter);
 apiV1Router.use("/admin/partners", adminPartnersRouter);
 apiV1Router.use("/admin/analytics", adminAnalyticsRouter);
+apiV1Router.use("/admin/chat", adminChatRouter);
 apiV1Router.use("/admin/upload", uploadRoutes);
 
 export default apiV1Router;
+
 

@@ -12,6 +12,7 @@
     "test": "node --test tests/**/*.test.js || echo 'Backend tests passed'",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
+    "db:ensure-chat": "prisma db execute --file prisma/sql/ensure_chat_tables.sql --schema prisma/schema.prisma",
     "db:seed": "tsx prisma/seed.ts",
     "db:seed:partners": "tsx prisma/seed_partners_now.ts"
   },
